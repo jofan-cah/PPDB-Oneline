@@ -1,0 +1,202 @@
+<?= $this->extend('template/template_backEnd') ?>
+<?= $this->section('content') ?>
+
+
+<div class="col-sm">
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Daftar <?= esc($subtitle) ?></h3>
+
+            <!-- <div class="card-tools">
+                <div class="input-group input-group-sm" style="width: 250px;">
+                    <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-default">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div> -->
+            <div class="card-tools m-1">
+                <button type="button" class="btn btn-tool btn-primary box-solid" data-toggle="modal" data-target="#tambah"><i class=" fas fa-plus mt-2"></i>
+                    Tambah
+                </button>
+            </div>
+        </div>
+
+        <!-- Card -->
+        <div class="card-body card-primary p-0 justify-content-center text-center">
+            <table class="table  table-sm ">
+                <?php $pesan =  session()->getFlashdata('pesan');
+                if ($pesan) : ?>
+                    <?= '<div class="alert alert-success alert-dismissible">' ?>
+                    <?= session()->getFlashdata('pesan'); ?>
+                    <?= '</div>'  ?>
+                <?php endif; ?>
+                <?php $errors = session()->getFlashdata('errors'); ?>
+                <?php if (!empty($errors)) : ?>
+                    <div class="alert alert-danger" role="alert">
+                        <ul>
+                            <?php foreach ($errors as $key) : ?>
+                                <li><?= esc($key) ?></li>
+                            <?php endforeach ?>
+                        </ul>
+                    </div>
+                <?php endif;  ?>
+                <thead>
+                    <tr>
+                        <th class="text-center" style="width: 30px">No</th>
+                        <th class="text-center">Tahun</th>
+                        <th class="text-center"><?= esc($subtitle) ?></th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">On/Off</th>
+                        <th class="text-center" style="width:320px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <?php $no = 1;
+                    foreach ($ta as $key => $value) : ?>
+                        <tr>
+                            <td><?= $no++; ?></td>
+                            <td><?= $value['tahun']; ?></td>
+                            <td><?= $value['ta']; ?></td>
+                            <td><?= ($value['status'] == 1) ? ' <label class="badge p-2 pr-3 pl-3 badge-success">  Aktif  </label>' : '<label class="badge p-2 badge-danger"> Non Aktif </label>' ?>
+                            </td>
+                            <td>
+                                <?php if ($value['status'] == 1) { ?>
+                                    <a href="<?= base_url('ta/statusNonAktif/') . '/' . $value['id_ta']  ?>" class="btn btn-danger btn-sm">Off</a>
+                                <?php } else { ?>
+                                    <a href="<?= base_url('ta/statusAktif/') . '/' . $value['id_ta']  ?>" class="btn btn-success btn-sm">On</a>
+                                <?php }; ?>
+                            </td>
+
+                            <td class="text-center">
+
+                                <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#ubah<?= $value['id_ta']; ?>"> <i class="fas fa-pencil-alt">
+                                    </i>
+                                    Edit</button>
+                                <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#hapus<?= $value['id_ta']; ?>"><i class="fas fa-trash">
+                                    </i>
+                                    Hapus</button>
+                            </td>
+                        </tr>
+                    <?php endforeach;  ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal tambah -->
+<div class=" container">
+    <div class="modal fade" id="tambah">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Tambah <?= esc($subtitle) ?></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <?= form_open('ta/tambah') ?>
+                    <div class="form-group">
+                        <label for="tahun">Tahun</label>
+                        <select name="tahun" class="form-control" id="">
+                            <?php $now = date('Y'); ?>
+                            <?php for ($i = 2018; $i <= $now; $i++) : ?>
+                                <option value="<?= $i; ?> " <?= ($now == $i) ? 'selected' : '' ?>> <?= $i; ?> </option>
+                            <?php endfor; ?>
+                        </select>
+                        <label for="ta"><?= esc($subtitle) ?></label>
+                        <input type="text" class="form-control mb-2" name="ta" placeholder="Masukan Pendidikan" required autofocus>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+                <?= form_close() ?>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal  tambah-->
+</div>
+
+
+<!-- Moadal Ubah -->
+<?php foreach ($ta as $key => $value) : ?>
+    <div class="container">
+        <div class="modal fade" id="ubah<?= $value['id_ta']; ?>">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Ubah Pendidikan</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <?= form_open('ta/ubah/' .  $value['id_ta']) ?>
+                        <div class="form-group">
+                            <label for="tahun"> Tahun </label>
+                            <select name="tahun" class="form-control" id="">
+                                <?php $now = date('Y'); ?>
+                                <?php for ($i = 2018; $i <= $now; $i++) : ?>
+                                    <option value="<?= $value['tahun'] ?> " <?= ($i == $value['tahun']) ? 'selected' : '' ?>> <?= $i; ?> </option>
+                                <?php endfor; ?>
+
+                            </select>
+                            <label for="ta">Tahun Ajaran </label>
+                            <input type="text" class="form-control" value="<?= $value['ta']; ?>" name="ta" placeholder="Masukan Tahun Ajaran" required autofocus>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                    <?= form_close() ?>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+    </div>
+<?php endforeach; ?>
+<!-- /.modal -->
+
+<!-- Moadal Hapus -->
+<?php foreach ($ta as $key => $value) : ?>
+    <div class="container">
+        <div class="modal fade " id="hapus<?= $value['id_ta']; ?>">
+            <div class="modal-dialog ">
+                <div class="modal-content ">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Hapus <?= esc($subtitle) ?></h4>
+                        <button type="button" class="close btn-danger " data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h4> Apakah Anda yakin Menghapus <?= $value['ta']; ?> </h4>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Tidak</button>
+                        <a href="<?= base_url('ta/hapus/' .  $value['id_ta']) ?>" type="submit" class="btn btn-primary">Iya</a>
+                    </div>
+
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+    </div>
+<?php endforeach; ?>
+
+
+
+<?= $this->endsection(); ?>
