@@ -36,7 +36,7 @@ class ModelBanner extends Model
 			->get()->getRowArray();
 	}
 
-	//
+
 	public function jumlahPendaftar()
 	{
 		return $this->db->table('tbl_siswa')
