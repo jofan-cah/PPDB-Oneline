@@ -23,7 +23,7 @@ class Admin extends BaseController
 			'total_pendidikan' => $this->ModelAdmin->totalPenghasilan(),
 			'total_penghasilan' => $this->ModelAdmin->totalPendidikan(),
 			'total_agama' => $this->ModelAdmin->totalAgama(),
-			'total_user ' => $this->ModelAdmin->totalUser(),
+			'total_user' => $this->ModelAdmin->totalUser(),
 			'total_pendaftaranMasuk' => $this->ModelAdmin->totalPendaftaranMasuk(),
 			'total_pendaftaranDiterima' => $this->ModelAdmin->totalPendaftaranDiterima(),
 			'total_pendaftaranDitolak' => $this->ModelAdmin->totalPendaftaranDitolak(),
